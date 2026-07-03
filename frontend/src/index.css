@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap");
+
+@theme {
+  --font-display: "Playfair Display", "Georgia", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-paper: #faf6ee;
+  --color-paper-alt: #e3ded4;
+  --color-ink: #1e1912;
+  --color-cream: #fffdf8;
+  --color-line: #cec6b6;
+  --color-gold: #93691e;
+  --color-gold-light: #d3a94f;
+  --color-muted: #7c7060;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-cream);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* react-datepicker light theme overrides */
+.sss-datepicker.react-datepicker {
+  background-color: var(--color-paper-alt);
+  border: 1px solid var(--color-line);
+  font-family: var(--font-sans);
+  width: 100%;
+}
+.sss-datepicker .react-datepicker__month-container {
+  width: 100%;
+  float: none;
+}
+.sss-datepicker .react-datepicker__header {
+  background-color: var(--color-paper-alt);
+  border-bottom: 1px solid var(--color-line);
+}
+.sss-datepicker .react-datepicker__current-month,
+.sss-datepicker .react-datepicker__day-name,
+.sss-datepicker .react-datepicker__day {
+  color: var(--color-ink);
+}
+.sss-datepicker .react-datepicker__day:hover {
+  background-color: var(--color-gold);
+  color: var(--color-cream);
+}
+.sss-datepicker .react-datepicker__day--selected,
+.sss-datepicker .react-datepicker__day--keyboard-selected {
+  background-color: var(--color-gold);
+  color: var(--color-cream);
+}
+.sss-datepicker .react-datepicker__day--disabled {
+  color: var(--color-muted);
+  opacity: 0.4;
+}
+.sss-datepicker .react-datepicker__navigation-icon::before {
+  border-color: var(--color-muted);
+}
+.sss-datepicker .react-datepicker__day--outside-month {
+  color: var(--color-muted);
+}

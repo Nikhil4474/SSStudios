@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        VITE_API_BASE_URL: https://ssstudios.me
+        VITE_YT_CHANNEL_ID: ${VITE_YT_CHANNEL_ID:-UCXXXXXXXXXXXXXXXXXXXXXX}
+    env_file:
+      - backend/.env
+    restart: unless-stopped
+    expose:
+      - "4000"
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      # Mount your Let's Encrypt certs here once issued (see README).
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # Shared webroot so certbot renewals (HTTP-01 challenge) can succeed later.
+      - certbot-webroot:/var/www/certbot
+    restart: unless-stopped
+
+volumes:
+  certbot-webroot:
