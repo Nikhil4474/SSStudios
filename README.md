@@ -30,13 +30,20 @@ While you don't yet have real Google credentials, set `MOCK_CALENDAR=true` in
 `backend/.env` — the API will return fake availability and "book" instantly so you can
 test the whole flow. Turn it off once real credentials are in place.
 
-## 2. Content to swap in
+## 2. Content
 
-- `frontend/src/config.ts` — studio name, tagline, contact info, socials, YouTube channel ID
-- `frontend/src/components/About.tsx` — bio text and headshot image
-- `frontend/src/components/Services.tsx` — real services/pricing
-- `frontend/src/components/Gallery.tsx` — swap the placeholder Unsplash photos for real shots (the click-through link to `https://cloud.ssstudios.me/s/SSSshare` is already wired up and doesn't need to change)
-- `frontend/src/components/Hero.tsx` — background image
+Real content is already in place: studio info (`frontend/src/config.ts`), bio and stats
+(`About.tsx`), services (`Services.tsx`), gallery photos (`Gallery.tsx`, linking out to
+`https://cloud.ssstudios.me/s/SSSshare`), and the brand logo (`Hero.tsx`, `About.tsx`,
+favicons in `frontend/public/`).
+
+To add or refresh photos:
+1. Drop full-resolution originals into `frontend/src/assets/services/` (or wherever the
+   component imports from)
+2. Run `npm run optimize-images` from `frontend/` — this resizes them to 1000x1000 and
+   converts to compressed `.webp` (raw camera photos can be 10-25MB each; this gets them
+   under 200KB so the gallery loads fast), overwriting the originals in place
+3. Update the relevant component's import path if the filename changed
 
 ## 3. Google Calendar setup (booking)
 
@@ -131,10 +138,25 @@ needed.
 
 ## 6. Live section
 
-`frontend/src/config.ts` has `YT_CHANNEL_ID` — set it to your real YouTube channel ID
-(Studio > Settings > Channel > Advanced settings, or from your channel URL if it's in the
-`UC...` format). The embed auto-plays whatever is currently live on that channel; when
-nothing is live, YouTube's own placeholder shows inside the frame.
+Two parts: the frontend embed, and a backend check that only shows it when you're
+actually streaming (instead of YouTube's generic "video unavailable" placeholder).
+
+1. **Frontend embed** — `frontend/.env`: set `VITE_YT_CHANNEL_ID` to your real YouTube
+   channel ID (`UC...`, found at Studio > Settings > Channel > Advanced settings).
+2. **Backend live check** — the site calls `/api/live-status`, which uses the YouTube
+   Data API to check whether the channel is live before showing the player, falling back
+   to a "We're not live right now" message otherwise:
+   - In the same Google Cloud project from section 3, enable the **YouTube Data API v3**
+     (APIs & Services > Library).
+   - Create an API key (APIs & Services > Credentials > Create Credentials > API key).
+     This can be a plain API key (no OAuth needed, since it only reads public data).
+   - In `backend/.env`, set `YOUTUBE_API_KEY` (the key) and `YOUTUBE_CHANNEL_ID` (same
+     channel ID as above).
+3. **Gotcha**: the API only finds **Public** live streams on the **exact channel ID**
+   configured — an Unlisted/Private stream, or streaming from the wrong Google account,
+   won't show up. Double-check both before assuming it's broken.
+4. If `YOUTUBE_API_KEY` is left blank, `/api/live-status` always reports "not live" —
+   harmless, just means the fallback message always shows.
 
 ## 7. Deploying without Docker (PM2 + nginx)
 
@@ -151,7 +173,7 @@ directly, so you only need to run and expose one process/port (`PORT` in `backen
 default 4000).
 
 Recommended setup:
-- Run the backend with [PM2](https://pm2.keymetrics.io/) (`pm2 start dist/server.js --name sss-website`) so it restarts on crash/reboot.
+- Run the backend with [PM2](https://pm2.keymetrics.io/) (`pm2 start dist/src/server.js --name sss-website`) so it restarts on crash/reboot.
 - Put a reverse proxy (nginx, or your router if it supports it) in front of that port to
   terminate HTTPS and forward `ssstudios.me` traffic to it.
 - Point your GoDaddy DNS `A` record at your home IP (and keep it updated if your ISP
@@ -198,6 +220,8 @@ Website/
 7. Common commands: `docker compose logs -f app` to watch the app, `docker compose restart
    app` after changing `backend/.env`, `docker compose up -d --build` after a code change.
 
-I wasn't able to actually build/run this Docker setup myself in this environment (Docker
-isn't installed here) — do one `docker compose up -d --build` on your end and let me know
-if anything needs adjusting.
+This build has been verified locally: `docker build` produces a working image, and the
+containerized backend was confirmed to serve the frontend and hit the real Google
+Calendar successfully. The one thing that can't be tested off the real server is the
+nginx/HTTPS half, since Let's Encrypt certs can only be issued once the domain is
+publicly reachable — that's what step 3 above is for.
