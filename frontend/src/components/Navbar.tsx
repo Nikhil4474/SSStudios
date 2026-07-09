@@ -21,12 +21,12 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 bg-paper/90 backdrop-blur transition-shadow duration-300 ${
-        scrolled ? 'border-b border-line shadow-sm' : ''
+      className={`fixed inset-x-0 top-0 z-50 border-b border-gold/25 bg-[#0d0906]/95 shadow-lg shadow-black/30 backdrop-blur transition-shadow duration-300 ${
+        scrolled ? 'shadow-xl' : ''
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#top" className="font-display text-xl tracking-wide text-ink">
+        <a href="#top" className="font-display text-xl tracking-wide text-cream">
           {SITE.studioName}
         </a>
 
@@ -35,7 +35,7 @@ export default function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="text-sm uppercase tracking-wider text-muted transition-colors hover:text-gold"
+                className="text-sm uppercase tracking-wider text-cream/70 transition-colors hover:text-gold-light"
               >
                 {link.label}
               </a>
@@ -45,14 +45,14 @@ export default function Navbar() {
 
         <a
           href="#booking"
-          className="hidden rounded-full border border-gold px-5 py-2 text-sm uppercase tracking-wider text-gold transition-colors hover:bg-gold hover:text-cream md:inline-block"
+          className="hidden rounded-full border border-gold-light px-5 py-2 text-sm uppercase tracking-wider text-gold-light transition-colors hover:bg-gold-light hover:text-ink md:inline-block"
         >
           Book Now
         </a>
 
         <button
           type="button"
-          className="text-ink md:hidden"
+          className="text-cream md:hidden"
           aria-label="Toggle menu"
           onClick={() => setMenuOpen((v) => !v)}
         >
@@ -67,13 +67,13 @@ export default function Navbar() {
       </nav>
 
       {menuOpen && (
-        <ul className="flex flex-col gap-1 border-t border-line bg-paper px-6 pb-6 md:hidden">
+        <ul className="flex flex-col gap-1 border-t border-cream/10 bg-ink px-6 pb-6 md:hidden">
           {LINKS.map((link) => (
             <li key={link.href}>
               <a
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="block py-3 text-sm uppercase tracking-wider text-muted hover:text-gold"
+                className="block py-3 text-sm uppercase tracking-wider text-cream/70 hover:text-gold-light"
               >
                 {link.label}
               </a>
