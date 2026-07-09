@@ -9,26 +9,26 @@ services:
       - backend/.env
     restart: unless-stopped
     expose:
-      - "4000"
+      - "8080"
 
-  nginx:
-    image: nginx:alpine
-    depends_on:
-      - app
-    ports:
-      - "80:80"
-      - "443:443"
-    # Lets nginx reach services running directly on the host (e.g. Immich at
-    # localhost:2283 for cloud.ssstudios.me), not just other containers.
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      # Mount your Let's Encrypt certs here once issued (see README).
-      - /etc/letsencrypt:/etc/letsencrypt:ro
-      # Shared webroot so certbot renewals (HTTP-01 challenge) can succeed later.
-      - certbot-webroot:/var/www/certbot
-    restart: unless-stopped
+  # nginx:
+  #   image: nginx:alpine
+  #   depends_on:
+  #     - app
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   # Lets nginx reach services running directly on the host (e.g. Immich at
+  #   # localhost:2283 for cloud.ssstudios.me), not just other containers.
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  #     # Mount your Let's Encrypt certs here once issued (see README).
+  #     - /etc/letsencrypt:/etc/letsencrypt:ro
+  #     # Shared webroot so certbot renewals (HTTP-01 challenge) can succeed later.
+  #     - certbot-webroot:/var/www/certbot
+  #   restart: unless-stopped
 
 volumes:
   certbot-webroot:
